@@ -15,7 +15,7 @@ buttonAdicionar.addEventListener('click', async () => {
     }
 })
 
-async function buscarUsuario(usuario){
+async function buscarUsuario(username){
     try{
         //biblioteca, Faz uma requisição GET à API do GitHub para obter dados do usuário
         const response = await axios.get(`https://api.github.com/users/${username}`);
@@ -46,8 +46,25 @@ function adicionarCartao(usuario){
     `;
 
     cartoes.appendChild(cartao);
+    procurarRepositorios(usuario.login, `lista-repos-${usuario.login}`)
 
 
 }
 
+async function procurarRepositorios(username, lista){
+    try{
+        const response = await axios.get(`https://api.github.com/users/${username}/repos`);
+        const repositorio = response.data;
+        const listaRepositorios = document.getElementById(lista);
+        repositorio.forEach(element => {
+            const item = document.createElement('li')
+            item.classList.add('text-sm', 'text-gray-600', 'mb-2');
+            item.textContent = element.name
+            listaRepositorios.appendChild(item);
 
+        });
+
+    } catch (error) {
+        console.error('Erro ao buscar repositórios do usuário no GitHub:', error);
+    }
+}
